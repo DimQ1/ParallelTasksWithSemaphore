@@ -11,7 +11,6 @@ namespace SemaphoreApp
         private static SemaphoreSlim semaphoreSlim;
 
         private static int padding;
-
         private static int countFinishedTasks;
         private static int countWorkingTasks;
         private static int countWaitingTasks;
@@ -53,8 +52,6 @@ namespace SemaphoreApp
             Console.WriteLine("Main thread exits.");
         }
 
-
-
         private void PrintCount()
         {
             var consoleLine = $"\n---------------------------------" +
@@ -63,7 +60,6 @@ namespace SemaphoreApp
                  $"\n{nameof(countFinishedTasks)}:{countFinishedTasks}";
             Console.Write(consoleLine);
         }
-
 
         private void yourMethod()
         {
