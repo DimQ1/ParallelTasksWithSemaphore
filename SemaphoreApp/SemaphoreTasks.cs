@@ -26,6 +26,8 @@ namespace SemaphoreApp
             _parralelCount = parralelCount;
             _urls = urls;
             ServicePointManager.DefaultConnectionLimit = parralelCount;
+            ServicePointManager.MaxServicePoints = parralelCount;
+            
         }
 
 
@@ -55,7 +57,7 @@ namespace SemaphoreApp
                    //your method for executing smth
                    await HttpRequests.brutForceAsync(urlLock);
                    //one semaphore will be freed
-                   semaphoreSlim.Release(1);
+                   semaphoreSlim.Release();
                    Interlocked.Add(ref countWorkingTasks, -1);
                    Interlocked.Add(ref countFinishedTasks, 1);
                    PrintCount();
@@ -77,9 +79,5 @@ namespace SemaphoreApp
             Console.Write(consoleLine);
         }
 
-        private void yourMethod()
-        {
-            Thread.Sleep(1000 + padding);
-        }
     }
 }

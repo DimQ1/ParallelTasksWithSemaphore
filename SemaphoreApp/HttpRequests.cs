@@ -19,6 +19,8 @@ namespace SemaphoreApp
             {
                 WebRequest webRequest = WebRequest.Create(webUrl);
                 webRequest.Method = HttpMethod.Head.ToString();
+                //you can configure it if need corrected timeout
+               // webRequest.Timeout = (int)TimeSpan.FromSeconds(2).TotalMilliseconds;
 
                 HttpWebResponse webresponse = (await webRequest.GetResponseAsync()) as HttpWebResponse;
 
