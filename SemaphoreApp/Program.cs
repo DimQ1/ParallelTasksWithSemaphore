@@ -8,7 +8,12 @@ namespace SemaphoreApp
 
         static void Main(string[] args)
         {
-            SemaphoreTasks semaphoreTasks = new SemaphoreTasks();
+
+            LoggerConfigure.ConfigureLogger();
+
+            var urls = UrlsReader.GetUrls($"{System.IO.Directory.GetCurrentDirectory()}\\Hosts.txt");
+
+            SemaphoreTasks semaphoreTasks = new SemaphoreTasks(urls, 200);
 
             semaphoreTasks.StartTasks();
         }

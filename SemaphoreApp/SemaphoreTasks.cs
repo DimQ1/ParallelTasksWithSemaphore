@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,19 +16,34 @@ namespace SemaphoreApp
         private static int countWorkingTasks;
         private static int countWaitingTasks;
 
+
+        private readonly int _parralelCount;
+        private readonly Stack<string> _urls;
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public SemaphoreTasks(Stack<string> urls, int parralelCount = 10)
+        {
+            _parralelCount = parralelCount;
+            _urls = urls;
+            ServicePointManager.DefaultConnectionLimit = parralelCount;
+        }
+
+
         public void StartTasks()
         {
-            semaphoreSlim = new SemaphoreSlim(5);
+            semaphoreSlim = new SemaphoreSlim(this._parralelCount);
 
             Console.WriteLine($"{semaphoreSlim.CurrentCount} tasks can enter th semaphore");
 
-            Task[] tasks = new Task[500];
+            Task[] tasks = new Task[_urls.Count];
             PrintCount();
-
-            for (var i = 0; i < 500; i++)
+            
+            while (_urls.Count > 0)
             {
-                tasks[i] = Task.Run(async () =>
+                var url = _urls.Pop();
+                tasks[_urls.Count] = Task.Run(async () =>
                {
+                   var urlLock = url;
                    Interlocked.Add(ref countWaitingTasks, 1);
                    PrintCount();
                    //waite if all semaphores busy
@@ -37,7 +53,7 @@ namespace SemaphoreApp
                    Interlocked.Add(ref padding, 1);
                    PrintCount();
                    //your method for executing smth
-                   yourMethod();
+                   await HttpRequests.brutForceAsync(urlLock);
                    //one semaphore will be freed
                    semaphoreSlim.Release(1);
                    Interlocked.Add(ref countWorkingTasks, -1);
